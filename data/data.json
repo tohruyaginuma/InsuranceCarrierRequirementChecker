@@ -1,0 +1,526 @@
+{
+    "fieldDefinitions": [
+        {
+            "label": "First Name",
+            "options": null,
+            "propertyName": "ApplicantGivenName",
+            "type": "string"
+        },
+        {
+            "label": "Last Name",
+            "options": null,
+            "propertyName": "ApplicantSurname",
+            "type": "string"
+        },
+        {
+            "label": "Date of Birth",
+            "options": null,
+            "propertyName": "ApplicantDOB",
+            "type": "string"
+        },
+        {
+            "label": "Insurance Status",
+            "options": [
+                {
+                    "label": "Currently Insured",
+                    "value": "CI"
+                },
+                {
+                    "label": "Not Insured",
+                    "value": "NI"
+                },
+                {
+                    "label": "Lapsed",
+                    "value": "L"
+                },
+                {
+                    "label": "Cancelled",
+                    "value": "C"
+                }
+            ],
+            "propertyName": "InsuranceStatus",
+            "type": "string"
+        },
+        {
+            "label": "Prior Carrier",
+            "options": [
+                {
+                    "label": "Allstate",
+                    "value": "Allstate"
+                },
+                {
+                    "label": "GEICO",
+                    "value": "GEICO"
+                },
+                {
+                    "label": "State Farm",
+                    "value": "State Farm"
+                },
+                {
+                    "label": "Progressive",
+                    "value": "Progressive"
+                },
+                {
+                    "label": "Nationwide",
+                    "value": "Nationwide"
+                }
+            ],
+            "propertyName": "PriorCarrier",
+            "type": "string"
+        },
+        {
+            "label": "Uninsured Motorist Property Damage",
+            "options": [
+                {
+                    "label": "$3,500",
+                    "value": 3500
+                },
+                {
+                    "label": "$5,000",
+                    "value": 5000
+                },
+                {
+                    "label": "$7,500",
+                    "value": 7500
+                },
+                {
+                    "label": "$10,000",
+                    "value": 10000
+                }
+            ],
+            "propertyName": "UMPD",
+            "type": "number"
+        },
+        {
+            "label": "Collision Deductible",
+            "options": [
+                {
+                    "label": "$0",
+                    "value": 0
+                },
+                {
+                    "label": "$25",
+                    "value": 25
+                },
+                {
+                    "label": "$50",
+                    "value": 50
+                },
+                {
+                    "label": "$100",
+                    "value": 100
+                },
+                {
+                    "label": "$200",
+                    "value": 200
+                },
+                {
+                    "label": "$250",
+                    "value": 250
+                },
+                {
+                    "label": "$300",
+                    "value": 300
+                }
+            ],
+            "propertyName": "Collision",
+            "type": "number"
+        }
+    ],
+    "carrierRequirements": [
+        {
+            "propertyName": "ApplicantGivenName",
+            "validator": {
+                "type": "notEquals",
+                "values": [
+                    "",
+                    null
+                ],
+                "conditions": []
+            },
+            "explanation": "Applicant Given Name is required."
+        },
+        {
+            "propertyName": "ApplicantSurname",
+            "validator": {
+                "type": "notEquals",
+                "values": [
+                    "",
+                    null
+                ],
+                "conditions": []
+            },
+            "explanation": "Applicant Surname is required."
+        },
+        {
+            "propertyName": "ApplicantDOB",
+            "validator": {
+                "type": "regex",
+                "test": "^\\d{4}-\\d{2}-\\d{2}$",
+                "conditions": []
+            },
+            "explanation": "Date of birth is required and must be in YYYY-MM-DD format."
+        },
+        {
+            "propertyName": "InsuranceStatus",
+            "validator": {
+                "type": "notEquals",
+                "values": [
+                    "",
+                    null
+                ],
+                "conditions": []
+            },
+            "explanation": "Client Insurance Status is required."
+        },
+        {
+            "propertyName": "PriorCarrier",
+            "validator": {
+                "type": "notEquals",
+                "values": [
+                    "",
+                    null
+                ],
+                "conditions": [
+                    {
+                        "propertyName": "InsuranceStatus",
+                        "validator": {
+                            "type": "equals",
+                            "values": [
+                                "CI"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "explanation": "Prior Carrier is required if Insurance Status is currently insured."
+        },
+        {
+            "propertyName": "UMPD",
+            "validator": {
+                "type": "equals",
+                "values": [
+                    null
+                ],
+                "conditions": [
+                    {
+                        "propertyName": "Collision",
+                        "validator": {
+                            "type": "equals",
+                            "values": [
+                                0,
+                                25,
+                                50,
+                                100,
+                                200,
+                                250,
+                                300
+                            ]
+                        }
+                    }
+                ]
+            },
+            "explanation": "UMPD and Collision may not be selected together."
+        },
+        {
+            "propertyName": "Collision",
+            "validator": {
+                "type": "equals",
+                "values": [
+                    null
+                ],
+                "conditions": [
+                    {
+                        "propertyName": "UMPD",
+                        "validator": {
+                            "type": "equals",
+                            "values": [
+                                3500,
+                                5000,
+                                7500,
+                                10000
+                            ]
+                        }
+                    }
+                ]
+            },
+            "explanation": "Collision and UMPD may not be selected together."
+        }
+    ],
+    "examples": [
+        {
+            "description": "All required fields provided correct",
+            "pass": true,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "CI"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": "Allstate"
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": 5000
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "description": "Missing Surname",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": ""
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "CI"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": "Allstate"
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": 5000
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "description": "Missing Prior Carrier when Insurance Status is CI",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "CI"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": ""
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": 5000
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "description": "UMPD and Collision selected together",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "CI"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": "Progressive"
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": 5000
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": 50
+                }
+            ]
+        },
+        {
+            "description": "DOB in wrong format",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-1-1"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "CI"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": "Allstate"
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": 5000
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "description": "Undefined field values",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": null
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "NI"
+                }
+            ]
+        },
+        {
+            "description": "Type mismatch - string for number field",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "NI"
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": "not-a-number"
+                }
+            ]
+        },
+        {
+            "description": "Invalid option selection",
+            "pass": false,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "John"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Doe"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1980-01-01"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "INVALID_STATUS"
+                }
+            ]
+        },
+        {
+            "description": "Lapsed insurance doesn't require prior carrier",
+            "pass": true,
+            "values": [
+                {
+                    "propertyName": "ApplicantGivenName",
+                    "value": "Jane"
+                },
+                {
+                    "propertyName": "ApplicantSurname",
+                    "value": "Smith"
+                },
+                {
+                    "propertyName": "ApplicantDOB",
+                    "value": "1990-05-15"
+                },
+                {
+                    "propertyName": "InsuranceStatus",
+                    "value": "L"
+                },
+                {
+                    "propertyName": "PriorCarrier",
+                    "value": ""
+                },
+                {
+                    "propertyName": "UMPD",
+                    "value": null
+                },
+                {
+                    "propertyName": "Collision",
+                    "value": 100
+                }
+            ]
+        }
+    ]
+}
