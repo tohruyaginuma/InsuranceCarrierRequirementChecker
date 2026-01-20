@@ -1,6 +1,7 @@
 package handler
 
 type listApplicantResponse struct {
+	ID              int64  `json:"id"`
 	GivenName       string `json:"given_name"`
 	Surname         string `json:"surname"`
 	DateOfBirth     string `json:"date_of_birth"`

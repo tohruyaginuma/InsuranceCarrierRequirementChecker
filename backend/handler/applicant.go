@@ -77,6 +77,7 @@ func (h *applicant) List(c echo.Context) error {
 	applicantResponse := make([]listApplicantResponse, len(applicants))
 	for i, a := range applicants {
 		applicantResponse[i] = listApplicantResponse{
+			ID:              a.ID,
 			GivenName:       a.GivenName,
 			Surname:         a.Surname,
 			DateOfBirth:     a.DateOfBirth,
