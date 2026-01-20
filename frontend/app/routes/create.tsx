@@ -31,6 +31,8 @@ import {
 } from "~/components/ui/field";
 import { toast } from "sonner";
 import { useState } from "react";
+import type { FieldValidationResult } from "~/types";
+import { useNavigate } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -40,10 +42,13 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState<FieldValidationResult[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
     const data = {
       given_name: formData.get("ApplicantGivenName"),
@@ -51,10 +56,13 @@ export default function Home() {
       date_of_birth: formData.get("ApplicantDOB"),
       insurance_status: formData.get("InsuranceStatus"),
       prior_carrier: formData.get("PriorCarrier"),
-      umpd: formData.get("UMPD"),
-      collision: formData.get("Collision"),
+      umpd: formData.get("UMPD")
+        ? parseInt(formData.get("UMPD") as string)
+        : null,
+      collision: formData.get("Collision")
+        ? parseInt(formData.get("Collision") as string)
+        : null,
     };
-    console.log(data);
 
     try {
       const response = await fetch(`${apiUrl}/v1/applicants/`, {
@@ -65,17 +73,29 @@ export default function Home() {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log(result);
-      if (result.result === "OK") {
-        toast.success("Applicant created successfully");
-      } else {
+      setErrors([]);
+
+      if (result.result === "NG") {
+        if (result.fieldResults) {
+          setErrors(result.fieldResults);
+        }
+
         toast.error(result.message || "Failed to create applicant");
+        return;
+      } else {
+        toast.success("Applicant created successfully");
+        navigate("/");
       }
     } catch (error) {
+      setErrors([]);
       toast.error(
         error instanceof Error ? error.message : "Failed to create applicant",
       );
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/");
   };
 
   return (
@@ -91,9 +111,9 @@ export default function Home() {
       </Flex>
       <Content>
         <FieldSet className="max-w-2xl">
-          <FieldLegend>Profile</FieldLegend>
+          <FieldLegend>Applicant</FieldLegend>
           <FieldDescription>
-            This appears on invoices and emails.
+            This is the applicant's information.
           </FieldDescription>
           <form onSubmit={handleSubmit}>
             <FieldGroup>
@@ -105,7 +125,7 @@ export default function Home() {
                     </FieldLabel>
 
                     {field.options ? (
-                      <Select>
+                      <Select name={field.propertyName} defaultValue="default">
                         <SelectTrigger className="w-full">
                           <SelectValue
                             placeholder={
@@ -119,6 +139,9 @@ export default function Home() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
+                            <SelectItem value="default" disabled>
+                              Select an option
+                            </SelectItem>
                             {field.options.map((option) => (
                               <SelectItem
                                 key={option.value}
@@ -134,7 +157,12 @@ export default function Home() {
                       <>
                         {field.type === "string" && (
                           <Input
-                            type="text"
+                            type={
+                              field.propertyName === "ApplicantDOB"
+                                ? "date"
+                                : "text"
+                            }
+                            name={field.propertyName}
                             placeholder={
                               data.examples[0].values
                                 .find(
@@ -147,12 +175,24 @@ export default function Home() {
                         )}
                       </>
                     )}
+                    {errors?.find(
+                      (error) => error.propertyName === field.propertyName,
+                    ) && (
+                      <FieldError>
+                        {
+                          errors?.find(
+                            (error) =>
+                              error.propertyName === field.propertyName,
+                          )?.errorMessage
+                        }
+                      </FieldError>
+                    )}
                   </Field>
                 ))}
               </div>
               <Field orientation="horizontal">
                 <Button type="submit">Submit</Button>
-                <Button variant="outline" type="button">
+                <Button variant="outline" type="button" onClick={handleCancel}>
                   Cancel
                 </Button>
               </Field>

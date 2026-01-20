@@ -8,3 +8,9 @@ export type Applicant = {
   umpd: number | null;
   collision: number | null;
 };
+
+export type FieldValidationResult = {
+  propertyName: string;
+  isValid: boolean;
+  errorMessage?: string;
+};
