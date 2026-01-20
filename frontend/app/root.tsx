@@ -35,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="overflow-y-scroll">
         <QueryClientProvider client={queryClient}>
           <main className="m-auto w-[1280px] p-4">{children}</main>
           <ScrollRestoration />

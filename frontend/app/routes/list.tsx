@@ -41,18 +41,24 @@ export default function List() {
     }
   }, []);
 
-  const {
-    data: applicants,
-    isPending,
-  } = useQuery<Applicant[]>({
+  const { data: applicants, isPending } = useQuery<Applicant[]>({
     queryKey: ["applicants"],
     queryFn: fetchApplicants,
   });
 
   return (
     <>
-      <Flex direction="row" gap="md" justify="between" align="center">
-        <Heading title="Applicants List" />
+      <Link to="/" className="block mb-4 hover:opacity-60 transition-opacity duration-100">
+        <Heading title="Insurance Carrier Requirement Checker" as="h1" />
+      </Link>
+      <Flex
+        direction="row"
+        gap="md"
+        justify="between"
+        align="center"
+        className="mt-6"
+      >
+        <Heading title="Applicants List" as="h2" />
         <Button variant="outline" asChild>
           <Link to="/create">
             <PlusIcon className="size-4" />
@@ -61,7 +67,7 @@ export default function List() {
         </Button>
       </Flex>
       <Content>
-        <Table>
+        <Table className="w-full">
           <TableCaption>A list of your recent applicants.</TableCaption>
           <TableHeader>
             <TableRow>

@@ -96,8 +96,11 @@ export default function Home() {
 
   return (
     <>
+      <Link to="/" className="block mb-4 hover:opacity-60 transition-opacity duration-100">
+        <Heading title="Insurance Carrier Requirement Checker" as="h1" />
+      </Link>
       <Flex direction="row" gap="md" justify="between" align="center">
-        <Heading title="Create Applicant" />
+        <Heading title="Create Applicant" as="h2" />
         <Button variant="outline" asChild>
           <Link to="/">
             <ArrowLeftIcon className="size-4" />
@@ -106,7 +109,7 @@ export default function Home() {
         </Button>
       </Flex>
       <Content>
-        <FieldSet className="max-w-2xl">
+        <FieldSet className="w-1/2">
           <FieldLegend>Applicant</FieldLegend>
           <FieldDescription>
             This is the applicant's information.
