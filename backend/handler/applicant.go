@@ -6,15 +6,18 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/tohruyaginuma/InsuranceCarrierRequirementChecker/model"
+	"github.com/tohruyaginuma/InsuranceCarrierRequirementChecker/validator"
 )
 
 type applicant struct {
-	store applicantStore
+	store        applicantStore
+	requirements []model.CarrierRequirement
 }
 
-func NewApplicant(store applicantStore) *applicant {
+func NewApplicant(store applicantStore, requirements []model.CarrierRequirement) *applicant {
 	return &applicant{
-		store: store,
+		store:        store,
+		requirements: requirements,
 	}
 }
 
@@ -27,6 +30,24 @@ func (h *applicant) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request body",
+		})
+	}
+
+	fieldValues := []model.FieldValue{
+		{PropertyName: "ApplicantGivenName", Value: request.GivenName},
+		{PropertyName: "ApplicantSurname", Value: request.Surname},
+		{PropertyName: "ApplicantDOB", Value: request.DateOfBirth},
+		{PropertyName: "InsuranceStatus", Value: request.InsuranceStatus},
+		{PropertyName: "PriorCarrier", Value: request.PriorCarrier},
+		{PropertyName: "UMPD", Value: request.UMPD},
+		{PropertyName: "Collision", Value: request.Collision},
+	}
+
+	result := validator.ValidateCarrierRequirements(fieldValues, h.requirements)
+	if !result.IsValid {
+		return c.JSON(http.StatusBadRequest, map[string]any{
+			"result":       "NG",
+			"fieldResults": result.FieldResults,
 		})
 	}
 
