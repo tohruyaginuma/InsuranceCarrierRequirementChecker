@@ -48,7 +48,10 @@ export default function List() {
 
   return (
     <>
-      <Link to="/" className="block mb-4 hover:opacity-60 transition-opacity duration-100">
+      <Link
+        to="/"
+        className="block mb-4 hover:opacity-60 transition-opacity duration-100"
+      >
         <Heading title="Insurance Carrier Requirement Checker" as="h1" />
       </Link>
       <Flex
