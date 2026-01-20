@@ -14,7 +14,7 @@ type Registry struct {
 }
 
 func unmarshalData() model.Data {
-	file, err := os.ReadFile("data/data.json")
+	file, err := os.ReadFile("../../data/data.json")
 	if err != nil {
 		panic(err)
 	}
