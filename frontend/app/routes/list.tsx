@@ -14,6 +14,11 @@ import Flex from "~/components/flex";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
 import { PlusIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "~/lib/config";
+import type { Applicant } from "~/types";
+import { Spinner } from "~/components/ui/spinner";
+import Text from "~/components/text";
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -23,6 +28,28 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function List() {
+	const fetchApplicants = async () => {
+		try {
+			const response = await fetch(`${apiUrl}/v1/applicants/`);
+
+			const data = await response.json();
+			console.log(data);
+			return data.applicants;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const {
+		data: applicants,
+		isPending,
+		error,
+	} = useQuery<Applicant[]>({
+		queryKey: ["applicants"],
+		queryFn: fetchApplicants,
+	});
+
 	return (
 		<>
 			<Flex direction="row" gap="md" justify="between" align="center">
@@ -39,22 +66,54 @@ export default function List() {
 					<TableCaption>A list of your recent applicants.</TableCaption>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[100px]">Invoice</TableHead>
-							<TableHead>Status</TableHead>
-							<TableHead>Method</TableHead>
-							<TableHead className="text-right">Amount</TableHead>
+							<TableHead className="w-[100px]">Given Name</TableHead>
+							<TableHead>Surname</TableHead>
+							<TableHead>Date of Birth</TableHead>
+							<TableHead>Insurance Status</TableHead>
+							<TableHead>Prior Carrier</TableHead>
+							<TableHead>UMPD</TableHead>
+							<TableHead>Collision</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						<TableRow>
-							<TableCell className="font-medium">INV001</TableCell>
-							<TableCell>Paid</TableCell>
-							<TableCell>Credit Card</TableCell>
-							<TableCell className="text-right">$250.00</TableCell>
+					{isPending ? (
+						<TableRow key="loading">
+							<TableCell colSpan={8} className="text-center">
+								<Flex justify="center" align="center" className="h-full">
+									<Spinner />
+								</Flex>
+							</TableCell>
 						</TableRow>
-					</TableBody>
-				</Table>
-			</Content>
-		</>
-	);
-}
+					) : (
+							applicants && applicants.length > 0 ? (
+								applicants.map((applicant) => (
+									<TableRow key={applicant.id}>
+										<TableCell className="font-medium">
+											{applicant.given_name}
+										</TableCell>
+										<TableCell>{applicant.surname}</TableCell>
+										<TableCell>{applicant.date_of_birth}</TableCell>
+										<TableCell>{applicant.insurance_status}</TableCell>
+										<TableCell>{applicant.prior_carrier}</TableCell>
+										<TableCell>
+											{applicant.umpd ? applicant.umpd : "N/A"}
+										</TableCell>
+										<TableCell>
+											{applicant.collision ? applicant.collision : "N/A"}
+										</TableCell>
+									</TableRow>
+								))
+							) : (
+									<TableRow key="no-applicants">
+										<TableCell colSpan={8} className="text-center">
+											<Text as="span" isError>No applicants found</Text>
+										</TableCell>
+									</TableRow>
+								)
+							)}
+						</TableBody>
+					</Table>
+				</Content>
+			</>
+		);
+	}
