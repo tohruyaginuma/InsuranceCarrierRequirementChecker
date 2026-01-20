@@ -44,7 +44,6 @@ export default function List() {
   const {
     data: applicants,
     isPending,
-    error,
   } = useQuery<Applicant[]>({
     queryKey: ["applicants"],
     queryFn: fetchApplicants,

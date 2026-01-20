@@ -18,15 +18,12 @@ import data from "../../../data/data.json";
 import { apiUrl } from "~/lib/config";
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
-  FieldTitle,
 } from "~/components/ui/field";
 import { toast } from "sonner";
 import { useState } from "react";
