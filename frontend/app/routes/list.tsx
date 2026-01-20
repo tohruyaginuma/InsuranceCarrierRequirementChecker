@@ -19,6 +19,7 @@ import { apiUrl } from "~/lib/config";
 import type { Applicant } from "~/types";
 import { Spinner } from "~/components/ui/spinner";
 import Text from "~/components/text";
+import { useCallback } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -28,18 +29,17 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function List() {
-  const fetchApplicants = async () => {
+  const fetchApplicants = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/v1/applicants/`);
 
       const data = await response.json();
-      console.log(data);
       return data.applicants;
     } catch (error) {
       console.error(error);
       throw error;
     }
-  };
+  }, []);
 
   const {
     data: applicants,
@@ -78,7 +78,7 @@ export default function List() {
           <TableBody>
             {isPending ? (
               <TableRow key="loading">
-                <TableCell colSpan={8} className="text-center">
+                <TableCell colSpan={7} className="text-center">
                   <Flex justify="center" align="center" className="h-full">
                     <Spinner />
                   </Flex>
@@ -104,7 +104,7 @@ export default function List() {
               ))
             ) : (
               <TableRow key="no-applicants">
-                <TableCell colSpan={8} className="text-center">
+                <TableCell colSpan={7} className="text-center">
                   <Text as="span" isError>
                     No applicants found
                   </Text>

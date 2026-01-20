@@ -10,7 +10,6 @@ import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectLabel,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -125,23 +124,12 @@ export default function Home() {
                     </FieldLabel>
 
                     {field.options ? (
-                      <Select name={field.propertyName} defaultValue="default">
+                      <Select name={field.propertyName}>
                         <SelectTrigger className="w-full">
-                          <SelectValue
-                            placeholder={
-                              data.examples[0].values
-                                .find(
-                                  (v) => v.propertyName === field.propertyName,
-                                )
-                                ?.value?.toString() || ""
-                            }
-                          />
+                          <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectItem value="default" disabled>
-                              Select an option
-                            </SelectItem>
                             {field.options.map((option) => (
                               <SelectItem
                                 key={option.value}
@@ -175,18 +163,15 @@ export default function Home() {
                         )}
                       </>
                     )}
-                    {errors?.find(
-                      (error) => error.propertyName === field.propertyName,
-                    ) && (
-                      <FieldError>
-                        {
-                          errors?.find(
-                            (error) =>
-                              error.propertyName === field.propertyName,
-                          )?.errorMessage
-                        }
-                      </FieldError>
-                    )}
+                    {(() => {
+                      const error = errors?.find(
+                        (error) => error.propertyName === field.propertyName,
+                      );
+
+                      return (
+                        error && <FieldError>{error.errorMessage}</FieldError>
+                      );
+                    })()}
                   </Field>
                 ))}
               </div>
