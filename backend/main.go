@@ -10,7 +10,10 @@ import (
 	"github.com/tohruyaginuma/InsuranceCarrierRequirementChecker/route"
 )
 
-const port = "8080"
+const (
+	port      = "8080"
+	clientURL = "http://localhost:5173"
+)
 
 func setLogger() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
@@ -23,7 +26,15 @@ func setEcho() *echo.Echo {
 	e := echo.New()
 
 	e.Debug = true
-	e.Use(middleware.CORS())
+
+	e.Use(middleware.CORSWithConfig(
+		middleware.CORSConfig{
+			AllowOrigins:     []string{clientURL},
+			AllowMethods:     []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, "Authorization"},
+			AllowCredentials: true,
+		},
+	))
 
 	return e
 }
