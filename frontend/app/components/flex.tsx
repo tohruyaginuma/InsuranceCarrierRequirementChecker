@@ -6,6 +6,7 @@ type Props = PropsWithChildren<{
 	justify?: "start" | "end" | "center" | "between" | "around" | "evenly";
 	align?: "start" | "end" | "center" | "baseline" | "stretch";
 	gap?: "sm" | "md" | "lg";
+	className?: string;
 }>;
 
 const Flex = (props: Props) => {
@@ -15,6 +16,7 @@ const Flex = (props: Props) => {
 		justify = "start",
 		align = "start",
 		gap = "0",
+		className = "",
 	} = props;
 	return (
 		<div
@@ -35,6 +37,7 @@ const Flex = (props: Props) => {
 				"gap-sm": gap === "sm",
 				"gap-md": gap === "md",
 				"gap-lg": gap === "lg",
+				className,
 			})}
 		>
 			{children}
